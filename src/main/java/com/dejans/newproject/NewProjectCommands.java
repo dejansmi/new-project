@@ -103,10 +103,8 @@ public class NewProjectCommands {
 			e.printStackTrace();
 		}
 
-        String st = fileCurrent.getName();
         String st1 = fileCurrent.getPath();
         String st2 = fileCurrent.getParent();
-        System.out.println(st);
         System.out.println(st1);
         System.out.println(st2);
     }
