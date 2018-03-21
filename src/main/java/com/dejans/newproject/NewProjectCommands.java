@@ -18,21 +18,38 @@ import freemarker.template.TemplateExceptionHandler;
 public class NewProjectCommands {
     private String[] args;
     private String baseDir;
-    String baseDirProject;
-    String nameProject;
+    private String baseDirProject;
+    private String nameProject;
+    private String newProjectTemplate;
     // Short name of project witout special character (-,#,$). It use as a java variable
-    String name;
-    boolean zipSet;
+    private String name;
+    private boolean zipSet;
+    private boolean lib;
 
     public NewProjectCommands(String[] args) {
         this.args = args;
         this.baseDir = System.getenv("JAVA_PROJECTS_BASE");
         zipSet = false;
+        lib = false;
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--zip")) {
                 zipSet = true;
             }
+            if (args[i].equals("--lib")) {
+                lib = true;
+            }
         }
+        nameProject = args[0];
+        if (lib) {
+            // this is library jar
+            newProjectTemplate = baseDir + "/new-project-template/lib";
+            baseDirProject = baseDir + "/source/lib/" + nameProject;
+        } else {
+            // this is application jar
+            newProjectTemplate = baseDir + "/new-project-template/application";
+            baseDirProject = baseDir + "/source/" + nameProject;
+        }
+        name = nameProject;
     }
 
     public void execute() {
@@ -40,9 +57,6 @@ public class NewProjectCommands {
             System.out.println("Syntax is: new-project nameOfProjects");
             return;
         }
-        nameProject = args[0];
-        baseDirProject = baseDir + "/source/" + nameProject;
-        name = nameProject;
         while (name.contains("-") || name.contains(" ") || name.contains("#")) {
             int ind = name.indexOf("-");
             if (ind > -1) {
@@ -66,7 +80,7 @@ public class NewProjectCommands {
                 File destFile = new File(baseDirProject);
                 if (zipSet) {
                     Zip zip = new Zip();
-                    zip.zipDir(baseDir + "/new-project-template", baseDirProject + "/temp.zip");
+                    zip.zipDir(newProjectTemplate, baseDirProject + "/temp.zip");
                     zip.unzip(baseDirProject, "/temp.zip", baseDirProject);
                     File zipDel = new File(baseDirProject + "/temp.zip");
                     zipDel.delete();
@@ -87,8 +101,8 @@ public class NewProjectCommands {
                 root.put("nameProject", nameProject);
         
 
-                File sourceFile = new File(baseDir + "/new-project-template");
-                subdirecotories(sourceFile, destFile, baseDir + "/new-project-template", baseDirProject, cfg, root);
+                File sourceFile = new File(newProjectTemplate);
+                subdirecotories(sourceFile, destFile, newProjectTemplate, baseDirProject, cfg, root);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
