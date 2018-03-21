@@ -1,18 +1,19 @@
 package com.dejans.newproject;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+
+
 
 public class NewProjectCommands {
     private String[] args;
