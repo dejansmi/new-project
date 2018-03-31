@@ -21,22 +21,49 @@ public class NewProjectCommands {
     private String baseDirProject;
     private String nameProject;
     private String newProjectTemplate;
+    private String port = "2222";
     // Short name of project witout special character (-,#,$). It use as a java variable
     private String name;
     private boolean zipSet;
     private boolean lib;
+    private boolean eureka;
 
     public NewProjectCommands(String[] args) {
+        if (args.length <= 0) {
+            System.out.println("Syntax is: new-project nameOfProjects [Options]");
+            System.out.println("[Options] are:");
+            System.out.println("--lib - generate lib Maven java project");
+            System.out.println("--zip - generate zip file insted generate files on directory");
+            System.out.println("--noeureka - no generate parameters for eureka. Default is generate eureka parameters");
+            System.out.println("--port - number of port use as eureka server");
+            System.exit(1);
+        }
         this.args = args;
         this.baseDir = System.getenv("JAVA_PROJECTS_BASE");
         zipSet = false;
         lib = false;
+        eureka = true;
+        boolean portTemp = false;
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--zip")) {
                 zipSet = true;
             }
             if (args[i].equals("--lib")) {
                 lib = true;
+                eureka = false;
+            }
+            if (args[i].equals("--noeureka")) {
+                eureka = false;
+            }
+            if (portTemp) {
+                // after --port next argument is number of port
+                // this have to be before args[i].equals("--port")
+                port = args[i];
+                portTemp = false;
+            }
+            if (args[i].equals("--port")) {
+                // next argument is number of port 
+                portTemp = true;
             }
         }
         nameProject = args[0];
@@ -54,7 +81,11 @@ public class NewProjectCommands {
 
     public void execute() {
         if (args.length <= 0) {
-            System.out.println("Syntax is: new-project nameOfProjects");
+            System.out.println("Syntax is: new-project nameOfProjects [Options]");
+            System.out.println("[Options] are:");
+            System.out.println("--lib - generate lib Maven java project");
+            System.out.println("--zip - generate zip file insted generate files on directory");
+            System.out.println("--noeureka - no generate parameters for eureka. Default is generate eureka parameters");
             return;
         }
         while (name.contains("-") || name.contains(" ") || name.contains("#")) {
@@ -99,6 +130,8 @@ public class NewProjectCommands {
                 root.put("basedir", "${basedir}");
                 root.put("name", name);
                 root.put("nameProject", nameProject);
+                root.put("eureka", eureka);
+                root.put("port", port);
         
 
                 File sourceFile = new File(newProjectTemplate);
