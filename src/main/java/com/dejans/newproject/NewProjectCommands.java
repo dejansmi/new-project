@@ -117,7 +117,7 @@ public class NewProjectCommands {
             for (File childFile : children) {
                 // First change name of files (if there are have $name$)
                 File dstFile = new File(childFile.getPath().replace(sourceBase, destinationBase));
-                if (dstFile.getName() != null && dstFile.getName().contains("$name")) {
+                if (dstFile.getPath() != null && dstFile.getPath().contains("$name")) {
                     String newName = dstFile.getPath().replace("$name$", name);
                     dstFile = new File(newName);
                 }

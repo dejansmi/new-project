@@ -13,7 +13,7 @@
             "stopOnEntry": false,
             "mainClass": "com.dejans.newproject.NewProjectApplication",
             "projectName": "new-project",
-            "args": "test-microservices"
+            "args": "test-new"
         },
         {
             "type": "java",
