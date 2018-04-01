@@ -13,8 +13,6 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
-
-
 public class NewProjectCommands {
     private String[] args;
     private String baseDir;
@@ -127,15 +125,24 @@ public class NewProjectCommands {
                 cfg.setWrapUncheckedExceptions(true);
 
                 Map root = new HashMap();
-                root.put("basedir", "${basedir}");
                 root.put("name", name);
                 root.put("nameProject", nameProject);
                 root.put("eureka", eureka);
                 root.put("port", port);
-        
+                // there are special casses becouse syntax of templace files
+                // are same as freemarker syntax
+                root.put("basedir", "${basedir}");
+                root.put("MAVEN_BASEDIR", "${MAVEN_BASEDIR:-\"$BASE_DIR\"}");
+                
 
                 File sourceFile = new File(newProjectTemplate);
                 subdirecotories(sourceFile, destFile, newProjectTemplate, baseDirProject, cfg, root);
+
+                // create a git environment
+                java.lang.Runtime rt = java.lang.Runtime.getRuntime();
+                // Start a new process: UNIX command ls
+                java.lang.Process p = rt.exec("git -C " + baseDirProject + " init");
+                p = rt.exec("git -C " + baseDirProject + " remote add origin https://dejansmi@github.com/dejansmi/" + nameProject);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -143,8 +150,8 @@ public class NewProjectCommands {
         }
     }
 
-    private void subdirecotories(File fileCurrent, File destFile, String sourceBase, String destinationBase, Configuration cfg, Map root)
-            throws IOException {
+    private void subdirecotories(File fileCurrent, File destFile, String sourceBase, String destinationBase,
+            Configuration cfg, Map root) throws IOException {
         if (fileCurrent.isDirectory()) {
             File[] children = fileCurrent.listFiles();
             for (File childFile : children) {
