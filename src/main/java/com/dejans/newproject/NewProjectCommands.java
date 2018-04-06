@@ -132,8 +132,13 @@ public class NewProjectCommands {
                 // there are special casses becouse syntax of templace files
                 // are same as freemarker syntax
                 root.put("basedir", "${basedir}");
+                root.put("wdir", "${wdir}");
+                root.put("M2_HOME", "${M2_HOME}");
+                root.put("MAVEN_PROJECTBASEDIR", "${MAVEN_PROJECTBASEDIR}");
+                root.put("WRAPPER_LAUNCHER", "${WRAPPER_LAUNCHER}");
                 root.put("MAVEN_BASEDIR", "${MAVEN_BASEDIR:-\"$BASE_DIR\"}");
                 
+
 
                 File sourceFile = new File(newProjectTemplate);
                 subdirecotories(sourceFile, destFile, newProjectTemplate, baseDirProject, cfg, root);
